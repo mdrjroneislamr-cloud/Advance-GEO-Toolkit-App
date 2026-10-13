@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEO Toolkit Pro - Web Suite</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold text-lg">
+                    <i class="fa-solid fa-rocket"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wide">GEO Toolkit Pro</h1>
+                    <p class="text-xs text-slate-400">Generative Engine Optimization Suite</p>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <button onclick="runAnalyzer()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2">
+                    <i class="fa-solid fa-play"></i> <span>Analyze Content</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
+        
+        <!-- Left Column: Input Form & Editor -->
+        <div class="lg:col-span-6 bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col space-y-4">
+            <h2 class="text-lg font-semibold text-gray-800 flex items-center space-x-2">
+                <i class="fa-solid fa-pen-to-square text-indigo-600"></i>
+                <span>Content & Meta Optimizer</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Target Keyword</label>
+                    <input type="text" id="targetKeyword" placeholder="e.g. generative AI tools" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Content Name / Title</label>
+                    <input type="text" id="contentTitle" placeholder="Article Title" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Meta Description</label>
+                <input type="text" id="metaDesc" placeholder="120-160 characters summary..." class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+
+            <div class="flex-grow flex flex-col">
+                <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Paste Article / HTML Content</label>
+                <textarea id="articleContent" rows="12" placeholder="Write or paste your article content here to analyze readability, SEO, credibility, and AI-readiness..." class="w-full flex-grow p-3 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-none font-mono"></textarea>
+            </div>
+        </div>
+
+        <!-- Right Column: Analytics & Scores Dashboard -->
+        <div class="lg:col-span-6 flex flex-col space-y-6">
+            
+            <!-- Score Card Summary -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800">GEO Audit Score</h2>
+                    <span id="overallBadge" class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full font-bold text-sm">Overall: --/100</span>
+                </div>
+                
+                <!-- Metrics Bar Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+                    <div class="bg-gray-50 p-3 rounded-lg border">
+                        <div class="text-xs text-gray-500 font-medium">Readability</div>
+                        <div id="scoreReadability" class="text-xl font-bold text-indigo-600">-</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg border">
+                        <div class="text-xs text-gray-500 font-medium">SEO Score</div>
+                        <div id="scoreSeo" class="text-xl font-bold text-indigo-600">-</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg border">
+                        <div class="text-xs text-gray-500 font-medium">Credibility</div>
+                        <div id="scoreCred" class="text-xl font-bold text-indigo-600">-</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg border">
+                        <div class="text-xs text-gray-500 font-medium">AI-Ready</div>
+                        <div id="scoreAi" class="text-xl font-bold text-indigo-600">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                    <canvas id="scoreChart" height="150"></canvas>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                    <canvas id="keywordChart" height="150"></canvas>
+                </div>
+            </div>
+
+            <!-- Actionable Recommendations Box -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex-grow">
+                <h3 class="text-md font-semibold text-gray-800 mb-3"><i class="fa-solid fa-clipboard-check text-emerald-600 mr-2"></i>Improvement Checklist</h3>
+                <div id="checklistContainer" class="space-y-2 text-sm max-h-48 overflow-y-auto pr-2">
+                    <p class="text-gray-400 italic">Run analysis to view optimization suggestions...</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JavaScript Analysis & Dashboard Logic -->
+    <script>
+        let scoreChartInstance = null;
+        let keywordChartInstance = null;
+
+        function runAnalyzer() {
+            const raw = document.getElementById('articleContent').value;
+            const kw = document.getElementById('targetKeyword').value.trim().toLowerCase();
+            const title = document.getElementById('contentTitle').value;
+            const meta = document.getElementById('metaDesc').value;
+
+            if (!raw.trim()) {
+                alert('Please paste some content in the editor first!');
+                return;
+            }
+
+            const words = raw.match(/[A-Za-z0-9]+/g) || [];
+            const n_words = words.length;
+            const sentences = raw.split(/[.!?]+\s+/).filter(s => s.trim().length > 0);
+            const n_sent = Math.max(sentences.length, 1);
+
+            // Mock calculations for GEO Metrics
+            let readabilityScore = Math.min(100, Math.max(30, Math.round(100 - (n_words / n_sent) * 1.5)));
+            let seoScore = kw && title.toLowerCase().includes(kw) ? 85 : 55;
+            if (n_words > 300) seoScore += 15;
+            let credScore = raw.includes("http") || raw.includes("10.") ? 80 : 45;
+            let aiReadyScore = raw.includes("?") || raw.includes("-") ? 88 : 50;
+
+            const overall = Math.round((readabilityScore + seoScore + credScore + aiReadyScore) / 4);
+
+            // Update UI Scores
+            document.getElementById('overallBadge').innerText = `Overall: ${overall}/100`;
+            document.getElementById('scoreReadability').innerText = readabilityScore;
+            document.getElementById('scoreSeo').innerText = seoScore;
+            document.getElementById('scoreCred').innerText = credScore;
+            document.getElementById('scoreAi').innerText = aiReadyScore;
+
+            // Generate Checklist
+            let checklistHtml = `
+                <div class="flex items-center text-emerald-700"><i class="fa-solid fa-check mr-2"></i> Word count: ${n_words} words detected.</div>
+                <div class="flex items-center ${kw ? 'text-emerald-700' : 'text-amber-600'}"><i class="fa-solid ${kw ? 'fa-check' : 'fa-triangle-exclamation'} mr-2"></i> Keyword targeted: ${kw || 'None set'}</div>
+                <div class="flex items-center ${readabilityScore > 60 ? 'text-emerald-700' : 'text-red-600'}"><i class="fa-solid ${readabilityScore > 60 ? 'fa-check' : 'fa-xmark'} mr-2"></i> Readability factor optimized</div>
+                <div class="flex items-center ${credScore > 60 ? 'text-emerald-700' : 'text-red-600'}"><i class="fa-solid ${credScore > 60 ? 'fa-check' : 'fa-xmark'} mr-2"></i> Source references / citations check</div>
+            `;
+            document.getElementById('checklistContainer').innerHTML = checklistHtml;
+
+            // Render Charts
+            renderCharts(readabilityScore, seoScore, credScore, aiReadyScore);
+        }
+
+        function renderCharts(r, s, c, a) {
+            const ctx1 = document.getElementById('scoreChart').getContext('2d');
+            if (scoreChartInstance) scoreChartInstance.destroy();
+            scoreChartInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Readability', 'SEO', 'Credibility', 'AI-Ready'],
+                    datasets: [{
+                        label: 'Scores',
+                        data: [r, s, c, a],
+                        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444'],
+                        borderRadius: 6
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } }
+            });
+
+            const ctx2 = document.getElementById('keywordChart').getContext('2d');
+            if (keywordChartInstance) keywordChartInstance.destroy();
+            keywordChartInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Optimized', 'Gaps'],
+                    datasets: [{
+                        data: [78, 22],
+                        backgroundColor: ['#4f46e5', '#e5e7eb']
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+            });
+        }
+
+        // Initialize empty chart on load
+        window.onload = () => renderCharts(50, 50, 50, 50);
+    </script>
+</body>
+</html>
